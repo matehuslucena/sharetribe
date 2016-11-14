@@ -8,7 +8,7 @@ const { storiesOf } = storybookFacade;
 class WinderWinder extends Component {
   constructor(props) {
     super(props);
-    this.state = { isOpen: false };
+    this.state = { isOpen: props.isOpen };
   }
   render() {
     return div({ className: 'WinderWinder' }, [
@@ -20,15 +20,21 @@ class WinderWinder extends Component {
         },
         onClick: () => this.setState({ isOpen: !this.state.isOpen }), // eslint-disable-line react/no-set-state
       }, this.state.isOpen ? 'Hide SideWinder' : 'Show SideWinder'),
-      r(SideWinder, { ...this.props, isOpen: this.state.isOpen }, [
+      r(SideWinder, {
+        ...this.props,
+        isOpen: this.state.isOpen,
+        onClose: () => this.setState({ isOpen: false }),
+      }, [
         div({
           style: {
             height: '100%',
             backgroundColor: '#eee',
-            padding: '0.5em',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           },
         }, [
-          p('Lorem ipsum'),
+          p({ style: { margin: 0 } }, 'This is the content of the SideWinder'),
         ]),
       ]),
     ]);
@@ -40,4 +46,5 @@ storiesOf('General')
     withProps(WinderWinder, {
       wrapper: document.getElementById('root'),
       width: 300,
+      isOpen: false,
     })));

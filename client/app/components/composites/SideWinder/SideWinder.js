@@ -3,7 +3,7 @@
 
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import r, { div } from 'r-dom';
+import r, { div, button } from 'r-dom';
 
 import css from './SideWinder.css';
 
@@ -30,7 +30,17 @@ const syncWindowWidthTo = (el) => {
 
 const SideWinderContent = (props) => {
   console.log('SideWinderContent render');
-  return div({ className: css.content }, props.children);
+  return div({ className: css.content }, [
+    button({
+      onClick: props.onClose,
+      className: css.closeButton,
+    }, 'X'),
+    props.children,
+  ]);
+};
+
+SideWinderContent.propTypes = {
+  onClose: PropTypes.func.isRequired,
 };
 
 class SideWinder extends Component {
@@ -88,7 +98,9 @@ class SideWinder extends Component {
     }
 
     this.el.className = css.root;
-    ReactDOM.render(r(SideWinderContent, null, this.props.children), this.el);
+    ReactDOM.render(r(SideWinderContent, {
+      onClose: this.props.onClose,
+    }, this.props.children), this.el);
   }
 
   // TODO: shouldComponentUpdate() {}
@@ -103,6 +115,7 @@ SideWinder.propTypes = {
   wrapper: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   width: PropTypes.number.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   children: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
