@@ -6,12 +6,14 @@ import OnboardingTopBar from './OnboardingTopBarApp';
 import OnboardingGuideApp from './OnboardingGuideApp';
 import TopbarApp from './TopbarApp';
 import SearchPageApp from './SearchPageApp';
+import ListingEditAvailabilityApp from './ListingEditAvailabilityApp';
 
 ReactOnRails.register({
   OnboardingGuideApp,
   OnboardingTopBar,
   TopbarApp,
   SearchPageApp,
+  ListingEditAvailabilityApp,
 });
 
 ReactOnRails.registerStore({
