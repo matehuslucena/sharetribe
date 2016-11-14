@@ -30,7 +30,7 @@ const syncWindowWidthTo = (el) => {
 
 const SideWinderContent = (props) => {
   console.log('SideWinderContent render');
-  return div({ className: css.content }, [
+  return div({ className: css.content}, [
     button({
       onClick: props.onClose,
       className: css.closeButton,
@@ -57,7 +57,12 @@ class SideWinder extends Component {
     this.el = document.createElement('div');
     this.el.style.width = `${this.props.width}px`;
     this.el.style.right = `-${this.props.width}px`;
+
+    this.overlay = document.createElement('div');
+    this.overlay.className = css.overlay;
+
     this.props.wrapper.appendChild(this.el);
+    this.props.wrapper.appendChild(this.overlay);
     this.update();
   }
   componentDidUpdate() {
@@ -68,6 +73,7 @@ class SideWinder extends Component {
     console.debug('SideWinder.componentWillUnmount()', this.props.isOpen);
     ReactDOM.unmountComponentAtNode(this.el);
     this.props.wrapper.removeChild(this.el);
+    this.props.wrapper.removeChild(this.overlay);
     this.props.wrapper.classList.remove(css.wrapper);
     this.props.wrapper.classList.remove(css.wrapperOpen);
 
