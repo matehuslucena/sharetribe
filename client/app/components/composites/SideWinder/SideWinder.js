@@ -1,6 +1,11 @@
+/* eslint-disable no-console */
+// TODO: remove ^
+
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import r, { div } from 'r-dom';
+
+import css from './SideWinder.css';
 
 const syncWindowWidthTo = (el) => {
   /* eslint-disable no-param-reassign */
@@ -23,38 +28,81 @@ const syncWindowWidthTo = (el) => {
   /* eslint-enable no-param-reassign */
 };
 
-function SideWinderContent(props) {
-  console.log('content props:', props);
-  return div({
-    className: 'SideWinderContent',
-    style: { width: props.width },
-  }, props.children);
-}
+const SideWinderContent = (props) => {
+  console.log('SideWinderContent render');
+  return div({ className: css.content }, props.children);
+};
 
 class SideWinder extends Component {
+  constructor(props, context) {
+    console.debug('Sidewinder.constructor()', props.isOpen);
+    super(props, context);
+    this.update = this.update.bind(this);
+  }
   componentDidMount() {
-    console.log('winder props:', this.props);
-    const el = document.createElement('div');
-    el.classList.add('SideWinder');
-    this.props.wrapper.appendChild(el);
-    ReactDOM.render(r(SideWinderContent, this.props, this.props.children), el);
-    this.el = el;
-    this.stopWidthSync = syncWindowWidthTo(this.props.wrapper);
+    console.debug('SideWinder.componentDidMount()', this.props.isOpen);
+
+    this.props.wrapper.classList.add(css.wrapper);
+
+    this.el = document.createElement('div');
+    this.el.style.width = `${this.props.width}px`;
+    this.el.style.right = `-${this.props.width}px`;
+    this.props.wrapper.appendChild(this.el);
+    this.update();
+  }
+  componentDidUpdate() {
+    console.debug('SideWinder.componentDidUpdate()', this.props.isOpen);
+    this.update();
   }
   componentWillUnmount() {
-    this.stopWidthSync();
+    console.debug('SideWinder.componentWillUnmount()', this.props.isOpen);
     ReactDOM.unmountComponentAtNode(this.el);
     this.props.wrapper.removeChild(this.el);
+    this.props.wrapper.classList.remove(css.wrapper);
+    this.props.wrapper.classList.remove(css.wrapperOpen);
+
+    if (this.stopWidthSync) {
+      this.stopWidthSync();
+      this.stopWidthSync = null;
+    }
   }
+  update() {
+    console.debug('SideWinder.update()', this.props.isOpen);
+    const isOpen = this.props.isOpen;
+
+    if (isOpen) {
+      this.props.wrapper.classList.add(css.wrapperOpen);
+      this.props.wrapper.style.right = `${this.props.width}px`;
+    } else {
+      this.props.wrapper.classList.remove(css.wrapperOpen);
+      this.props.wrapper.style.right = '0px';
+    }
+
+    if (isOpen && !this.stopWidthSync) {
+      this.stopWidthSync = syncWindowWidthTo(this.props.wrapper);
+    } else if (!isOpen && this.stopWidthSync) {
+      this.stopWidthSync();
+      this.stopWidthSync = null;
+    } else {
+      console.debug('already or not yet syncing:', isOpen, typeof this.stopWidthSync);
+    }
+
+    this.el.className = css.root;
+    ReactDOM.render(r(SideWinderContent, null, this.props.children), this.el);
+  }
+
   // TODO: shouldComponentUpdate() {}
+
   render() {
+    console.debug('SideWinder.render()', this.props.isOpen);
     return null;
   }
 }
 
 SideWinder.propTypes = {
-  wrapper: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  width: PropTypes.number,
+  wrapper: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  width: PropTypes.number.isRequired,
+  isOpen: PropTypes.bool.isRequired,
   children: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 

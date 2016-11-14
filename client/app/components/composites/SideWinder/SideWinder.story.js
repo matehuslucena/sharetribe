@@ -6,18 +6,31 @@ import SideWinder from './SideWinder';
 const { storiesOf } = storybookFacade;
 
 class WinderWinder extends Component {
-  constructor(props, context) {
-    super(props.context);
+  constructor(props) {
+    super(props);
     this.state = { isOpen: false };
   }
   render() {
     return div({ className: 'WinderWinder' }, [
       button({
-        onClick: () => this.setState({ isOpen: !this.state.isOpen }),
+        style: {
+          float: 'right',
+          marginRight: '1em',
+          fontSize: '1.2em',
+        },
+        onClick: () => this.setState({ isOpen: !this.state.isOpen }), // eslint-disable-line react/no-set-state
       }, this.state.isOpen ? 'Hide SideWinder' : 'Show SideWinder'),
-      this.state.isOpen ? r(SideWinder, this.props, [
-        p('Lorem ipsum')
-      ]) : null
+      r(SideWinder, { ...this.props, isOpen: this.state.isOpen }, [
+        div({
+          style: {
+            height: '100%',
+            backgroundColor: '#eee',
+            padding: '0.5em',
+          },
+        }, [
+          p('Lorem ipsum'),
+        ]),
+      ]),
     ]);
   }
 }
