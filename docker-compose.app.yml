@@ -27,5 +27,5 @@ services:
     labels:
       - convox.deployment.minimum=0
       - convox.deployment.maximum=200
-      - convox.cron.test-task=*/2 * * * ? sleep 120
+      - convox.cron.test-task=*/2 * * * ? sleep 30
     command: bundle exec rake jobs:work
