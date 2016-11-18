@@ -13,7 +13,6 @@ services:
       - convox.health.path=/_health
       - convox.health.timeout=8
       - convox.idle.timeout=60
-      - convox.cron.test-task=*/2 * * * ? sleep 120
     ports:
       - "80:3000"
       - "443:3000"
@@ -28,5 +27,5 @@ services:
     labels:
       - convox.deployment.minimum=0
       - convox.deployment.maximum=200
-      - convox.cron.test-task=*/5 * * * ? sleep 120
+      - convox.cron.test-task=*/2 * * * ? sleep 120
     command: bundle exec rake jobs:work
